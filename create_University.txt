@@ -1,0 +1,56 @@
+/*COMMANDS TO CREATE UNIVERSITY DATABASE*/
+CREATE DATABASE UNIVERSITY; 
+/*NOW WE NEED TO USE THAT DATABASE FOR FURTHER OPERATIONS*/
+USE UNIVERSITY;        
+/* NOW CREATE TABLES REQUIRE FOR THE DATABASE USING E-R DIAGRAM*/
+CREATE TABLE college(name varchar(10),Insti_no int, department varchar(30), primary key(Insti_no));
+CREATE TABLE Student(Name varchar(10), Lastname varchar(10),roll_no int unique,Insti_no int, PRN varchar(15),CGPA float,Department varchar(20),
+ primary key(PRN), foreign key(Insti_no) references college(Insti_no));
+CREATE TABLE FDS(Roll_no int,CA int,Insem int,Endsem int,foreign key(Roll_no) references student(Roll_no));
+CREATE TABLE OOP(Roll_no int,CA int,Insem int,Endsem int,Total int,foreign key(Roll_no) references student(Roll_no));
+CREATE TABLE UHVPE(Roll_no int,CA int,Insem int,Endsem int,Total int,foreign key(Roll_no) references student(Roll_no));
+CREATE TABLE DECO(Roll_no int,CA int,Insem int,Endsem int,Total int,foreign key(Roll_no) references student(Roll_no));
+CREATE TABLE M3(Roll_no int,CA int,Insem int,Endsem int,Total int,foreign key(Roll_no) references student(Roll_no));
+/* Sample to Insert Data In DATABASE */
+/* EXAMPPLE FOR COLLEGE TABLE*/
+insert into college values("Sanjivani",5160,"B.tech");
+/*EXAMPLEFOR STUDENT TABLE*/
+insert into student values("Shahrukh","Khan",17,5170,"UCE19M1033",6.4,"Comp");
+insert into student values("Aniket","Jawale",41 ,,5160 ,"UIT19M1030" ,7.9 ,"IT");
+/*AS we are preparing For IT department first so primary key of Student i.e PRN of only IT department we have to use in other tables, 
+    Later as will go for other department as well */
+/* For Other tables*/
+Insert into M3(PRN,CA,Insem,Endsem)values("UIT19M1030",19,20,34);
+Insert into DECO(PRN,CA,Insem,Endsem)values("UIT19M1030",18,22,34);
+Insert into FDS(PRN,CA,Insem,Endsem)values("UIT19M1030",18,23,45);
+Insert into OOP(PRN,CA,Insem,Endsem)values("UIT19M1030",18,29,40);
+Insert into UHVPE(PRN,CA,Insem,Endsem)values("UIT19M1030",17,23,35);
+/*for Total column*/
+update M3 set total=CA+Insem+Endsem;
+update DECO set total=CA+Insem+Endsem;
+update FDS set total=CA+Insem+Endsem;
+update OOP set total=CA+Insem+Endsem;
+update UHVPE set total=CA+Insem+Endsem;
+/* for credit column*/
+update M3 set credit=4 where Endsem>=20 and total >= 40;
+update DECO set credit=3 where Endsem>=20 and total >= 40;
+update FDS set credit=3 where Endsem>=20 and total >= 40;
+update OOP set credit=3 where Endsem>=20 and total >= 40;
+update UHVPE set credit=3 where Endsem>=20 and total >= 40;
+/* This is an Example for one DATA same you can create by Entering proper values*/
+/* Procedure to calculate total,SGPA and show as different table */
+        DELIMITER //
+        create procedure result() 
+        select Name,student.PRN,M3.total as M3,FDS.total as FDS,OOP.total as OOP,
+        DECO.total as DECO,UHVPE.total as UHVPE,
+        M3.total+FDS.total+OOP.total+DECO.total+UHVPE.total as Total,
+        (M3.total+FDS.total+OOP.total+DECO.total+UHVPE.total)/5 as Percentage,
+        ((M3.total+FDS.total+OOP.total+DECO.total+UHVPE.total)/5+7.5)/10 as SGPA
+        from student
+        inner join M3 on student.PRN=M3.PRN
+        inner join FDS on student.PRN=FDS.PRN 
+        inner join OOP on student.PRN=OOP.PRN
+        inner join DECO on student.PRN=DECO.PRN
+        inner join UHVPE on student.PRN=UHVPE.PRN;
+        END //
+        DELIMITER ;
